@@ -22,7 +22,7 @@ type ClientWithTags = Client & {
   client_tags?: Array<{ tags: Tag | null }>
 }
 
-type SortField = 'full_name' | 'age' | 'address' | 'occupation' | 'company' | 'created_at'
+type SortField = 'full_name' | 'age' | 'address' | 'occupation' | 'company' | 'created_at' | 'status'
 
 interface Filters {
   status:     string[]
@@ -407,9 +407,10 @@ export default function ClientsPageClient({
             <div>
               <p className="mb-2 text-xs font-semibold text-slate-700">Source</p>
               {([
-                ['referral', 'Referral'], ['cold_call', 'Cold Call'],
-                ['social_media', 'Social Media'], ['event', 'Event'],
-                ['website', 'Website'], ['existing_client', 'Existing Client'],
+                ['referral', 'Referral'], ['warm', 'Warm'],
+                ['cold_call', 'Cold Call'], ['social_media', 'Social Media'],
+                ['event', 'Event'], ['website', 'Website'],
+                ['existing_client', 'Existing Client'],
                 ['walk_in', 'Walk-in'], ['other', 'Other'],
               ] as const).map(([val, label]) => (
                 <label key={val} className="flex cursor-pointer items-center gap-2 py-1 text-sm text-slate-600 hover:text-slate-900">
@@ -485,7 +486,7 @@ export default function ClientsPageClient({
                     </button>
                   </th>
                   <SortTh field="full_name"  label="Client"     current={sortField} dir={sortDir} onClick={toggleSort} className="min-w-[200px]" />
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 whitespace-nowrap">Status</th>
+                  <SortTh field="status" label="Status" current={sortField} dir={sortDir} onClick={toggleSort} />
                   <SortTh field="company"    label="Company"    current={sortField} dir={sortDir} onClick={toggleSort} />
                   <SortTh field="occupation" label="Occupation" current={sortField} dir={sortDir} onClick={toggleSort} />
                   <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">Phone</th>
