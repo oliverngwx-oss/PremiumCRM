@@ -146,6 +146,61 @@ export interface PlanningChecklist {
   updated_at:       string
 }
 
+export interface RetirementProfile {
+  id:                               string
+  user_id:                          string
+  client_id:                        string
+  target_retirement_age:            number | null
+  life_expectancy:                  number | null
+  current_monthly_expenses:         number | null
+  retirement_monthly_needs:         number | null
+  inflation_rate:                   number | null
+  expected_return_rate:             number | null
+  current_savings:                  number | null
+  cpf_ordinary_account:             number | null
+  cpf_special_account:              number | null
+  cpf_medisave_account:             number | null
+  investment_portfolio:             number | null
+  property_value:                   number | null
+  property_mortgage_outstanding:    number | null
+  other_assets:                     number | null
+  cpf_life_monthly:                 number | null
+  rental_income_monthly:            number | null
+  part_time_income_monthly:         number | null
+  other_income_monthly:             number | null
+  monthly_savings_contribution:     number | null
+  monthly_cpf_employee:             number | null
+  monthly_cpf_employer:             number | null
+  monthly_investment_contribution:  number | null
+  alloc_equities:                   number | null
+  alloc_bonds:                      number | null
+  alloc_cash:                       number | null
+  alloc_property:                   number | null
+  alloc_cpf:                        number | null
+  alloc_others:                     number | null
+  current_monthly_income:           number | null
+  post_retirement_return_rate:      number | null
+  advisor_notes:                    string | null
+  advisor_notes_category:           string | null
+  advisor_summary:                  string | null
+  readiness_score:                  number | null
+  created_at:                       string
+  updated_at:                       string
+}
+
+export interface RetirementActionItem {
+  id:           string
+  user_id:      string
+  client_id:    string
+  label:        string
+  category:     string
+  is_completed: boolean
+  is_custom:    boolean
+  sort_order:   number
+  created_at:   string
+  updated_at:   string
+}
+
 export interface UploadedFile {
   id:           string
   user_id:      string
@@ -169,6 +224,10 @@ export type InsertNote        = Omit<Note, 'id' | 'created_at' | 'updated_at'>
 export type InsertGoal        = Omit<Goal, 'id' | 'created_at' | 'updated_at'>
 export type InsertPlanningChecklist = Omit<PlanningChecklist, 'id' | 'created_at' | 'updated_at'>
 export type UpdatePlanningChecklist = Partial<InsertPlanningChecklist>
+export type InsertRetirementProfile    = Omit<RetirementProfile, 'id' | 'created_at' | 'updated_at'>
+export type UpdateRetirementProfile    = Partial<InsertRetirementProfile>
+export type InsertRetirementActionItem = Omit<RetirementActionItem, 'id' | 'created_at' | 'updated_at'>
+export type UpdateRetirementActionItem = Partial<InsertRetirementActionItem>
 export type InsertUploadedFile = Omit<UploadedFile, 'id' | 'created_at' | 'updated_at'>
 export type InsertTag         = Omit<Tag, 'id' | 'created_at'>
 
@@ -235,7 +294,9 @@ export interface Database {
       notes:          { Row: Note;          Insert: InsertNote;                            Update: UpdateNote                  } & RL
       goals:                   { Row: Goal;              Insert: InsertGoal;              Update: UpdateGoal                       } & RL
       uploaded_files:          { Row: UploadedFile;      Insert: InsertUploadedFile;      Update: Partial<InsertUploadedFile>      } & RL
-      client_planning_checklist: { Row: PlanningChecklist; Insert: InsertPlanningChecklist; Update: UpdatePlanningChecklist         } & RL
+      client_planning_checklist:      { Row: PlanningChecklist;      Insert: InsertPlanningChecklist;      Update: UpdatePlanningChecklist      } & RL
+      client_retirement_profile:      { Row: RetirementProfile;      Insert: InsertRetirementProfile;      Update: UpdateRetirementProfile      } & RL
+      client_retirement_action_items: { Row: RetirementActionItem;   Insert: InsertRetirementActionItem;   Update: UpdateRetirementActionItem   } & RL
     }
     Views: {
       goals_summary:           { Row: GoalSummary;           Relationships: [] }

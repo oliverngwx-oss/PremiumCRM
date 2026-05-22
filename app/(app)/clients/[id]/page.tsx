@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ClientProfilePage from '@/components/clients/profile/ClientProfilePage'
-import type { Client, Tag, Opportunity, Note, Activity, UploadedFile, PlanningChecklist } from '@/types/database'
+import type { Client, Tag, Opportunity, Note, Activity, UploadedFile, PlanningChecklist, RetirementProfile, RetirementActionItem } from '@/types/database'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -24,7 +24,7 @@ export default async function ClientDetailPage({ params }: Props) {
   const db = supabase as any
 
   // Fetch all data in parallel
-  const [clientRes, allTagsRes, oppsRes, notesRes, activitiesRes, filesRes, checklistRes] = await Promise.all([
+  const [clientRes, allTagsRes, oppsRes, notesRes, activitiesRes, filesRes, checklistRes, retirementProfileRes, retirementActionsRes] = await Promise.all([
     db.from('clients').select('*, client_tags(tags(*))').eq('id', id).eq('user_id', user.id).single(),
     db.from('tags').select('*').eq('user_id', user.id).order('name'),
     db.from('opportunities').select('*').eq('client_id', id).eq('user_id', user.id).order('created_at', { ascending: false }),
@@ -32,6 +32,8 @@ export default async function ClientDetailPage({ params }: Props) {
     db.from('activities').select('*').eq('client_id', id).eq('user_id', user.id).order('created_at', { ascending: false }),
     db.from('uploaded_files').select('*').eq('client_id', id).eq('user_id', user.id).order('created_at', { ascending: false }),
     db.from('client_planning_checklist').select('*').eq('client_id', id).eq('user_id', user.id),
+    db.from('client_retirement_profile').select('*').eq('client_id', id).eq('user_id', user.id).maybeSingle(),
+    db.from('client_retirement_action_items').select('*').eq('client_id', id).eq('user_id', user.id).order('sort_order'),
   ])
 
   if (!clientRes.data) notFound()
@@ -54,6 +56,8 @@ export default async function ClientDetailPage({ params }: Props) {
       activities={(activitiesRes.data ?? []) as Activity[]}
       files={(filesRes.data ?? []) as UploadedFile[]}
       checklist={(checklistRes.data ?? []) as PlanningChecklist[]}
+      retirementProfile={(retirementProfileRes.data ?? null) as RetirementProfile | null}
+      retirementActions={(retirementActionsRes.data ?? []) as RetirementActionItem[]}
       userId={user.id}
     />
   )

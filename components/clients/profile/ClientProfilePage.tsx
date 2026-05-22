@@ -15,6 +15,7 @@ import { cn, formatDate, formatDateTime, relativeTime, formatCurrency, getInitia
 import type {
   Client, Tag, Opportunity, Note, Activity as ActivityType,
   UploadedFile, ActivityType as AType, PlanningChecklist,
+  RetirementProfile, RetirementActionItem,
 } from '@/types/database'
 import StatusBadge from '@/components/clients/StatusBadge'
 import ClientFormDrawer from '@/components/clients/ClientFormDrawer'
@@ -23,20 +24,22 @@ import NoteDrawer from './NoteDrawer'
 import ActivityDrawer from './ActivityDrawer'
 import OpportunityModal from './OpportunityModal'
 import CoverageChecklist from './CoverageChecklist'
+import RetirementReport from './RetirementReport'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-type TabId = 'overview' | 'pipeline' | 'notes' | 'meetings' | 'tasks' | 'files' | 'timeline' | 'coverage'
+type TabId = 'overview' | 'pipeline' | 'notes' | 'meetings' | 'tasks' | 'files' | 'timeline' | 'coverage' | 'retirement'
 
 const TABS: { id: TabId; label: string }[] = [
-  { id: 'overview',  label: 'Overview' },
-  { id: 'pipeline',  label: 'Pipeline' },
-  { id: 'notes',     label: 'Notes' },
-  { id: 'meetings',  label: 'Meetings' },
-  { id: 'tasks',     label: 'Tasks' },
-  { id: 'files',     label: 'Files' },
-  { id: 'timeline',  label: 'Timeline' },
-  { id: 'coverage',  label: 'Coverage' },
+  { id: 'overview',    label: 'Overview' },
+  { id: 'pipeline',    label: 'Pipeline' },
+  { id: 'notes',       label: 'Notes' },
+  { id: 'meetings',    label: 'Meetings' },
+  { id: 'tasks',       label: 'Tasks' },
+  { id: 'files',       label: 'Files' },
+  { id: 'timeline',    label: 'Timeline' },
+  { id: 'coverage',    label: 'Coverage' },
+  { id: 'retirement',  label: 'Retirement' },
 ]
 
 const STAGE_CONFIG: Record<string, { label: string; dot: string; badge: string }> = {
@@ -167,8 +170,10 @@ export interface ClientProfilePageProps {
   notes: Note[]
   activities: ActivityType[]
   files: UploadedFile[]
-  checklist: PlanningChecklist[]
-  userId: string
+  checklist:          PlanningChecklist[]
+  retirementProfile:  RetirementProfile | null
+  retirementActions:  RetirementActionItem[]
+  userId:             string
 }
 
 export default function ClientProfilePage({
@@ -180,6 +185,8 @@ export default function ClientProfilePage({
   activities: initialActivities,
   files: initialFiles,
   checklist: initialChecklist,
+  retirementProfile,
+  retirementActions,
   userId,
 }: ClientProfilePageProps) {
 
@@ -1171,6 +1178,15 @@ export default function ClientProfilePage({
           <CoverageChecklist
             initialItems={initialChecklist}
             clientId={client.id}
+            userId={userId}
+          />
+        )}
+        {activeTab === 'retirement' && (
+          <RetirementReport
+            client={client}
+            checklist={initialChecklist}
+            initialProfile={retirementProfile}
+            initialActions={retirementActions}
             userId={userId}
           />
         )}
