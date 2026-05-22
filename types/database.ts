@@ -139,6 +139,7 @@ export interface PlanningChecklist {
   client_id:        string
   category_name:    string
   is_fulfilled:     boolean
+  coverage_pct:     number
   remarks:          string | null
   last_reviewed_at: string | null
   created_at:       string
